@@ -63,45 +63,85 @@ export default function Home() {
             </div>
             <div className="space-y-4 p-4">
               <h3 className="text-xl font-semibold text-orange-900">Daily Prompts</h3>
-            <Skeleton className={"h-4 bg-orange-100 w-3/4"}/>
-            <Skeleton className={"h-4 bg-orange-100 w-full"}/>
-            <Skeleton className={"h-4 bg-orange-100 w-2/3"}/>
+              <Skeleton className={"h-4 bg-orange-100 w-3/4"} />
+              <Skeleton className={"h-4 bg-orange-100 w-full"} />
+              <Skeleton className={"h-4 bg-orange-100 w-2/3"} />
             </div>
           </div>
         </div>
-          <div className="flex justify-center gap-4">
-            <Link href="/dashboard" >
+        <div className="flex justify-center gap-4">
+          <Link href="/dashboard" >
             <Button variant="journal" className="flex items-center justify-center gap-2 rounded-full  py-6 px-8 " >
-              Start Now<ChevronRight className="h-5 w-5"/>
+              Start Now<ChevronRight className="h-5 w-5" />
             </Button>
-            </Link>
-            <Link href="#feature" >
+          </Link>
+          <Link href="#feature" >
             <Button variant="outline" className="py-6 px-8 hover:bg-orange-50 text-orange-600 border-orange-600 rounded-full" >
               Learn More
             </Button>
-            </Link>
-          </div>
+          </Link>
+        </div>
       </div>
-      <section id="features" className="mt-24 mb-12 grid md:grid-cols-2 lg:grid-cols-3 gap-8" >{features.map((feature,index) => (
+      <section id="features" className="mt-24 mb-12 grid md:grid-cols-2 lg:grid-cols-3 gap-8" >{features.map((feature, index) => (
         <Card key={index}>
-        
-        <CardContent className="p-6">
-          <div className="h-12 w-12 bg-orange-50 rounded-full flex justify-center items-center mb-4">
 
-          <feature.icon className="h-5 w-5 text-orange-500"/>
-          </div>
-          <h3 className="font-semibold text-orange-900 text-xl">{feature.title}</h3>
-          <p className="text-orange-700">{feature.description}</p>
-        </CardContent>
-   
-      </Card>
+          <CardContent className="p-6">
+            <div className="h-12 w-12 bg-orange-50 rounded-full flex justify-center items-center mb-4">
 
-      
+              <feature.icon className="h-5 w-5 text-orange-500" />
+            </div>
+            <h3 className="font-semibold text-orange-900 text-xl">{feature.title}</h3>
+            <p className="text-orange-700">{feature.description}</p>
+          </CardContent>
+
+        </Card>
+
+
       )
       )}</section>
-      <div className="">
-        <div className=""></div>
-        <div className=""></div>
+      <div className="space-y-24 mt-24">
+        <div className="grid md:grid-cols-2">
+          <div className="space-y-6">
+
+            <div className="h-12 w-12 bg-orange-100 rounded-full flex justify-center items-center mb-4">
+              <FileText className="h-5 w-5 text-orange-500" />
+            </div>
+            <h3 className="text-2xl">
+              Rich Text Editor
+            </h3>
+            <p className="text-lg text-orange-700">
+              Express yourself fully with the our powerful editor featuring:
+            </p>
+            <ul className="space-y-3">
+              <li className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-orange-700" />
+                <span>
+                  Format text with ease
+                </span>
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-orange-700" />
+                <span>
+                  Embeded Links
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div className="space-y-4 bg-white rounded-2xl shadow-xl p-6 border border-orange-100">
+            <div className="flex gap-2 mb-6">
+
+
+        <div className="rounded h-8 w-8 bg-orange-100"/>
+        <div className="rounded h-8 w-8 bg-orange-100"/>
+        <div className="rounded h-8 w-8 bg-orange-100"/>
+            </div>
+            <Skeleton className={"bg-orange-100 h-4 w-2/3"}/>
+            <Skeleton className={"bg-orange-100 h-4 w-full"}/>
+            <Skeleton className={"bg-orange-100 h-4 w-3/4"}/>
+            <Skeleton className={"bg-orange-100 h-4 w-1/3"}/>
+
+          </div>
+        </div>
       </div>
     </div>
   );
