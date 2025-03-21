@@ -12,9 +12,10 @@ import {
 import { Button } from "./ui/button";
 import { FolderOpen, PenBox } from "lucide-react";
 import UserMenu from "./UserMenu";
+import { checkUser } from "@/lib/CheckUser";
 
-const Navbar = () => {
-
+const Navbar = async() => {
+await checkUser()
   return (
     <header className="container mx-auto max-w-none px-7 py-3">
 
