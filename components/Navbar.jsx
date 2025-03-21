@@ -25,7 +25,7 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           {/* login */}
           <SignedIn>
-            <Link href={"/dashboard/collections"}>
+            <Link href={"/dashboard#collections"}>
             <Button variant={"outline"}>
               <FolderOpen size={19}/>
               <span className="hidden md:inline">Check your Collections</span>
