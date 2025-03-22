@@ -6,9 +6,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
-import React from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import "react-quill-new/dist/quill.snow.css";
@@ -17,9 +17,18 @@ import { BarLoader } from "react-spinners";
 import { Input } from "@/components/ui/input";
 import { getMoodById, MOODS } from "@/app/lib/mood";
 import { Button } from "@/components/ui/button";
-
+import { createJournalEntry } from "@/actions/journal";
+import { useRouter } from "next/navigation";
+import { useFetch } from "@/hooks/use-fetch";
+import { toast } from "sonner";
 
 const page = () => {
+  const {
+    fn: actionFn,
+    loading: actionLoading,
+    data: actionResult,
+  } = useFetch(createJournalEntry);
+  const router = useRouter();
   const {
     handleSubmit,
     register,
@@ -34,11 +43,14 @@ const page = () => {
       collectionId: "",
     },
   });
-const submit=() => {
-  
-}
+  const submit = async (data) => {
+    console.log(data);
+    
+    const mood = getMoodById(data.mood);
+    actionFn({...data, moodScore:mood.score, moodQuery:mood.pixabayQuery});
+  };
 
-  const isLoading = false;
+  const isLoading = actionLoading;
   const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
   // ✅ Use useWatch to reactively get the selected mood
@@ -46,10 +58,18 @@ const submit=() => {
   const prompt = getMoodById(selectedMood)?.prompt || "Write Your Thoughts";
 
   console.log("Selected Mood:", selectedMood, "Prompt:", prompt);
+useEffect(() => {
+  if(actionResult&&!actionLoading){
+    // router.push(`/collections/${actionResult.collectionId?"actionResult.collectionId":"Unorganized"}`)
+    toast.success("Entry Created Suceesfully")
+  }
+
+  
+}, [actionResult,actionLoading])
 
   return (
     <div className="py-8">
-      <form className="flex flex-col gap-5" onSubmit={handleSubmit(submit)} >
+      <form className="flex flex-col gap-5" onSubmit={handleSubmit(submit)}>
         <h1 className="text-5xl md:text-6xl gradient-title">
           What&apos;s on Your Mind
         </h1>
@@ -62,20 +82,28 @@ const submit=() => {
           <Input
             {...register("title")}
             placeholder="Give your entry a title"
-            className={`py-5 md:text-md ${errors.title ? "border-red-100" : ""}`}
+            className={`py-5 md:text-md ${
+              errors.title ? "border-red-500" : ""
+            }`}
           />
-          {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
+          {errors.title && (
+            <p className="text-red-500 text-sm">{errors.title.message}</p>
+          )}
         </div>
 
         {/* Mood Selector */}
         <div className="space-y-2">
-          <label className="text-sm font-medium">How are you Feeling Today</label>
+          <label className="text-sm font-medium">
+            How are you Feeling Today
+          </label>
           <Controller
             name="mood"
             control={control}
             render={({ field }) => (
               <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className={`${errors.mood ? "bg-red-500" : ""} w-full`}>
+                <SelectTrigger
+                  className={`${errors.mood ? "border-red-500" : ""} w-full`}
+                >
                   <SelectValue placeholder="Select Your Mood" />
                 </SelectTrigger>
                 <SelectContent>
@@ -88,7 +116,9 @@ const submit=() => {
               </Select>
             )}
           />
-          {errors.mood && <p className="text-red-500 text-sm">{errors.mood.message}</p>}
+          {errors.mood && (
+            <p className="text-red-500 text-sm">{errors.mood.message}</p>
+          )}
         </div>
 
         {/* Writing Content */}
@@ -97,24 +127,28 @@ const submit=() => {
           <Controller
             name="content"
             control={control}
-            render={({field}) =>( 
-              <ReactQuill readOnly={isLoading} theme="snow" value={field.value} 
-              
-              onValueChange={field.onChange}
-              modules={{
-                toolbar:[
-                  [{header:[1,2,3,false]}],
-                  ["bold","itallic","underline","strike"],
-                  [{list:"ordered"},{list:'bullet'}],
-                  ["blockquote","code-block"],
-                  ["link"],
-                  ["clean"]
-                ]
-              }} />
-            )
-            }
+            render={({ field }) => (
+              <ReactQuill
+                readOnly={isLoading}
+                theme="snow"
+                value={field.value}
+                onChange={field.onChange}
+                modules={{
+                  toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ["bold", "itallic", "underline", "strike"],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["blockquote", "code-block"],
+                    ["link"],
+                    ["clean"],
+                  ],
+                }}
+              />
+            )}
           />
-          {errors.content && <p className="text-red-500 text-sm">{errors.content.message}</p>}
+          {errors.content && (
+            <p className="text-red-500 text-sm">{errors.content.message}</p>
+          )}
         </div>
         {/* Adding to collection */}
         <div className="space-y-2">
@@ -139,7 +173,11 @@ const submit=() => {
             )
             }
           /> */}
-          {errors.collectionId && <p className="text-red-500 text-sm">{errors.collectionId.message}</p>}
+          {errors.collectionId && (
+            <p className="text-red-500 text-sm">
+              {errors.collectionId.message}
+            </p>
+          )}
         </div>
         <div className="flex space-y-4">
           <Button variant={"journal"} type="submit">

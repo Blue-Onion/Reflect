@@ -4,6 +4,8 @@ import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getPixabyImage } from "./public";
 import { revalidatePath } from "next/cache";
+import aj from "@/app/lib/arject";
+import { request } from "@arcjet/next";
 
 export async function createJournalEntry(data) {
     try {
@@ -15,6 +17,26 @@ export async function createJournalEntry(data) {
             }
         })
         if (!user) throw new Error("User is not logged in");
+        const req=await request()
+        const decision=await aj.protect(
+            req,{userId,requested:1}
+        )
+        if(decision.isDenied()){
+            if(decision.reason.isRateLimit()){
+                const {remaining,reset}=decision.reason;
+                console.error(
+                    {
+                        code:"RATE_LIMIT_EXCEEDED",
+                        remaining,
+                        resetInSeconds:reset,
+
+                    }
+                )
+                throw new Error("Too many requests .Please try again later")
+            }
+            throw new Error("Request Blocked")
+
+        }
         const mood = MOODS[data.mood.toUpperCase()];
         if (!mood) throw new Error("Invalid Mood")
         const image_Url = await getPixabyImage(data.moodquery)
