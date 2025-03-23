@@ -4,18 +4,20 @@ import { auth } from "@clerk/nextjs/server";
 import aj from "@/app/lib/arject";
 import { request } from "@arcjet/next";
 import { revalidatePath } from "next/cache";
+
 export async function createCollection(data) {
   try {
     const { userId } = await auth();
-    if (!userId) throw new Error("Unautheroized");
+    if (!userId) throw new Error("Unauthorized");
+
     const user = await db.User.findUnique({
-      where: {
-        clerkUserId: userId,
-      },
+      where: { clerkUserId: userId },
     });
     if (!user) throw new Error("User is not logged in");
+
     const req = await request();
     const decision = await aj.protect(req, { userId, requested: 1 });
+
     if (decision.isDenied()) {
       if (decision.reason.isRateLimit()) {
         const { remaining, reset } = decision.reason;
@@ -24,10 +26,11 @@ export async function createCollection(data) {
           remaining,
           resetInSeconds: reset,
         });
-        throw new Error("Too many requests .Please try again later");
+        throw new Error("Too many requests. Please try again later");
       }
       throw new Error("Request Blocked");
     }
+
     const collection = await db.Collection.create({
       data: {
         name: data.name,
@@ -35,30 +38,31 @@ export async function createCollection(data) {
         userId: user.id,
       },
     });
-    revalidatePath("/dashboard");
+
+    revalidatePath("/dashboard"); // ✅ Allowed after database changes
     return collection;
   } catch (error) {
     throw new Error(error.message);
   }
 }
-export async function getCollection() {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unautheroized");
-  const user = await db.User.findUnique({
-    where: {
-      clerkUserId: userId,
-    },
-  });
-  if (!user) throw new Error("User is not logged in");
 
-  const collection = await db.Collection.findMany({
-    where: {
-      userId: user.id,
-    },
-    orderBy: {
-        createdAt: "desc",
-    },
-  });
-  revalidatePath("/dashboard");
-  return collection;
+export async function getCollection() {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const user = await db.User.findUnique({
+      where: { clerkUserId: userId },
+    });
+    if (!user) throw new Error("User is not logged in");
+
+    const collection = await db.Collection.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return collection; // ❌ Don't use `revalidatePath` here
+  } catch (error) {
+    throw new Error(error.message);
+  }
 }

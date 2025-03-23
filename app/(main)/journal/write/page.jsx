@@ -229,7 +229,7 @@ toast.success(`Collection ${createdCollection.name} created`)
           )}
         </div>
         <div className="flex space-y-4">
-          <Button variant={"journal"} type="submit">
+          <Button disabled={isLoading} variant={"journal"} type="submit">
             Publish
           </Button>
         </div>

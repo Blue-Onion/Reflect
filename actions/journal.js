@@ -1,5 +1,5 @@
-"use server"
-import { MOODS } from "@/app/lib/mood";
+"use server";
+import { getMoodById, moods } from "@/app/lib/mood";
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getPixabyImage } from "./public";
@@ -10,58 +10,91 @@ import { request } from "@arcjet/next";
 export async function createJournalEntry(data) {
     try {
         const { userId } = await auth();
-        if (!userId) throw new Error("Unautheroized")
-        const user = await db.User.findUnique({
-            where: {
-                clerkUserId: userId
-            }
-        })
+        if (!userId) throw new Error("Unauthorized");
+        
+        const user = await db.user.findUnique({
+            where: { clerkUserId: userId }
+        });
         if (!user) throw new Error("User is not logged in");
-        const req=await request()
-        const decision=await aj.protect(
-            req,{userId,requested:1}
-        )
-        if(decision.isDenied()){
-            if(decision.reason.isRateLimit()){
-                const {remaining,reset}=decision.reason;
-                console.error(
-                    {
-                        code:"RATE_LIMIT_EXCEEDED",
-                        remaining,
-                        resetInSeconds:reset,
 
-                    }
-                )
-                throw new Error("Too many requests .Please try again later")
+        const req = await request();
+        const decision = await aj.protect(req, { userId, requested: 1 });
+
+        if (decision.isDenied()) {
+            if (decision.reason.isRateLimit()) {
+                const { remaining, reset } = decision.reason;
+                console.error({
+                    code: "rate_limit_exceeded",
+                    remaining,
+                    resetInSeconds: reset,
+                });
+                throw new Error("Too many requests. Please try again later");
             }
-            throw new Error("Request Blocked")
-
+            throw new Error("request_blocked");
         }
-        const mood = MOODS[data.mood.toUpperCase()];
-        if (!mood) throw new Error("Invalid Mood")
-        const image_Url = await getPixabyImage(data.moodQuery)
-        const entry = db.Entry.create({
+
+        const mood = moods[data.mood.toLowerCase()];
+        if (!mood) throw new Error("invalid_mood");
+
+        const image_url = await getPixabyImage(data.moodQuery);
+        const entry = await db.entry.create({
             data: {
                 title: data.title,
                 content: data.content,
                 mood: mood.id,
                 moodScore: mood.score,
-                moodImageUrl: image_Url,
+                moodImageUrl: image_url,
                 userId: user.id,
-                collectionId: data.collectionId || null
+                collectionId: data.collectionId || null,
+            },
+        });
 
-            }
-        })
-        await db.Draft.deleteMany({
-            where:{
-                userId:user.id
-            }
-        })
+        await db.draft.deleteMany({
+            where: { userId: user.id },
+        });
 
-        revalidatePath("/dashboard")
-        return entry
+        revalidatePath("/dashboard");
+        return entry;
     } catch (error) {
         console.log(error.message);
+    }
+}
 
+export async function getJournalEntry({ collectionId, orderBy = "desc" } = {}) {
+    try {
+        const { userId } = await auth();
+        if (!userId) throw new Error("Unauthorized");
+
+        const user = await db.user.findUnique({
+            where: { clerkUserId: userId },
+        });
+        if (!user) throw new Error("User is not logged in");
+
+        const entries = await db.entry.findMany({
+            where: {
+                userId: user.id,
+                ...(collectionId?.toLowerCase() === "unorganized"
+                    ? { collectionId: null }
+                    : collectionId
+                    ? { collectionId }
+                    : ""),
+            },
+            include: {
+                collections: {
+                    select: { name: true, id: true },
+                },
+            },
+            orderBy: { createdAt: orderBy },
+        });
+
+        const entriesWithMoodData = entries.map((entry) => ({
+            ...entry,
+            moodData: getMoodById(entry.mood),
+        }));
+
+        return { success: true, data: { entries: entriesWithMoodData } };
+    } catch (error) {
+        console.error(error.message);
+        throw new Error(error.message);
     }
 }
