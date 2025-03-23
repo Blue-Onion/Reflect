@@ -39,7 +39,7 @@ export async function createJournalEntry(data) {
         }
         const mood = MOODS[data.mood.toUpperCase()];
         if (!mood) throw new Error("Invalid Mood")
-        const image_Url = await getPixabyImage(data.moodquery)
+        const image_Url = await getPixabyImage(data.moodQuery)
         const entry = db.Entry.create({
             data: {
                 title: data.title,
