@@ -25,6 +25,8 @@ import { createCollection, getCollection } from "@/actions/collection";
 import CollectionForm from "@/components/CollectionForm";
 
 const page = () => {
+  console.log(MOODS);
+
   const [isCollectionDailogOpen, setisCollectionDailogOpen] = useState(false);
   const {
     fn: actionFn,
@@ -86,13 +88,12 @@ const page = () => {
     fetchCollectionFn();
   }, []);
   useEffect(() => {
-    if(createdCollection){
-      setisCollectionDailogOpen(false)
-      fetchCollectionFn()
-      setValue("collectionId",createdCollection.id)
-toast.success(`Collection ${createdCollection.name} created`)
+    if (createdCollection) {
+      setisCollectionDailogOpen(false);
+      fetchCollectionFn();
+      setValue("collectionId", createdCollection.id);
+      toast.success(`Collection ${createdCollection.name} created`);
     }
-
   }, [createdCollection]);
   console.log("collections", collections);
 
@@ -185,7 +186,7 @@ toast.success(`Collection ${createdCollection.name} created`)
             <p className="text-red-500 text-sm">{errors.content.message}</p>
           )}
         </div>
-        {/* Adding to collection */}
+
         <div className="space-y-2">
           <label className="text-sm font-medium">Add to Your Collections</label>
           <Controller

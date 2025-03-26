@@ -2,7 +2,7 @@
 const CollectionPreview = () => {
   return (
     <div>
-      
+      Nigga
     </div>
   )
 }
