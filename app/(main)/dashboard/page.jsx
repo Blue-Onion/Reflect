@@ -17,7 +17,8 @@ const page = async () => {
     },
     {}
   );
-  console.log("Entry By data", entriesByCollection);
+console.log(entriesByCollection);
+
 
   return (
     <div className="px-4 py-4 space-y-8">

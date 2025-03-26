@@ -8,8 +8,9 @@ import {
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { Controller, set, useForm, useWatch } from "react-hook-form";
 import "react-quill-new/dist/quill.snow.css";
 import { journalSchema } from "@/app/lib/Schema";
 import { BarLoader } from "react-spinners";
@@ -24,6 +25,8 @@ import { createCollection, getCollection } from "@/actions/collection";
 import CollectionForm from "@/components/CollectionForm";
 
 const page = () => {
+ 
+
   const [isCollectionDailogOpen, setisCollectionDailogOpen] = useState(false);
   const {
     fn: actionFn,
@@ -56,14 +59,15 @@ const page = () => {
       collectionId: "",
     },
   });
-  
   const submit = async (data) => {
+
     const mood = getMoodById(data.mood);
     actionFn({ ...data, moodScore: mood.score, moodQuery: mood.pixabayQuery });
   };
 
   const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
+  // ✅ Use useWatch to reactively get the selected mood
   const selectedMood = useWatch({ control, name: "mood" });
   const prompt = getMoodById(selectedMood)?.prompt || "Write Your Thoughts";
 
@@ -76,14 +80,12 @@ const page = () => {
             : "Unorganized"
         }`
       );
-      toast.success("Entry Created Successfully");
+      toast.success("Entry Created Suceesfully");
     }
   }, [actionResult, actionLoading]);
-  
   useEffect(() => {
     fetchCollectionFn();
   }, []);
-  
   useEffect(() => {
     if (createdCollection) {
       setisCollectionDailogOpen(false);
@@ -92,6 +94,7 @@ const page = () => {
       toast.success(`Collection ${createdCollection.name} created`);
     }
   }, [createdCollection]);
+
 
   const handleCreateCollection = async (data) => {
     createCollectionFn(data);
@@ -108,6 +111,7 @@ const page = () => {
 
         {isLoading && <BarLoader color="orange" width={"100%"} />}
 
+        {/* Title Input */}
         <div className="space-y-2">
           <label className="text-sm font-medium">Title</label>
           <Input
@@ -122,6 +126,7 @@ const page = () => {
           )}
         </div>
 
+        {/* Mood Selector */}
         <div className="space-y-2">
           <label className="text-sm font-medium">
             How are you Feeling Today
@@ -151,6 +156,78 @@ const page = () => {
           )}
         </div>
 
+        {/* Writing Content */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">{prompt}</label>
+          <Controller
+            name="content"
+            control={control}
+            render={({ field }) => (
+              <ReactQuill
+                readOnly={isLoading}
+                theme="snow"
+                value={field.value}
+                onChange={field.onChange}
+                modules={{
+                  toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ["bold", "itallic", "underline", "strike"],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["blockquote", "code-block"],
+                    ["link"],
+                    ["clean"],
+                  ],
+                }}
+              />
+            )}
+          />
+          {errors.content && (
+            <p className="text-red-500 text-sm">{errors.content.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Add to Your Collections</label>
+          <Controller
+            name="collectionId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                onValueChange={(value) => {
+                  if (value == "new") {
+                    setisCollectionDailogOpen(true);
+                  } else {
+                    field.onChange(value);
+                  }
+                }}
+                value={field.value}
+              >
+                <SelectTrigger
+                  className={`${errors.mood ? "border-red-500" : ""} w-full`}
+                >
+                  <SelectValue placeholder="Choose a Collection...." />
+                </SelectTrigger>
+                <SelectContent>
+                  {collections?.map((collection) => (
+                    <SelectItem key={collection.id} value={collection.id}>
+                      {collection.name}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value={"new"}>
+                    <span className="text-orange-600">
+                      + Create New Collection
+                    </span>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {errors.collectionId && (
+            <p className="text-red-500 text-sm">
+              {errors.collectionId.message}
+            </p>
+          )}
+        </div>
         <div className="flex space-y-4">
           <Button disabled={isLoading} variant={"journal"} type="submit">
             Publish
