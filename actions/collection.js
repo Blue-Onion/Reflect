@@ -61,7 +61,7 @@ export async function getCollection() {
       orderBy: { createdAt: "desc" },
     });
 
-    return collection; // ❌ Don't use `revalidatePath` here
+    return collection; // 
   } catch (error) {
     throw new Error(error.message);
   }

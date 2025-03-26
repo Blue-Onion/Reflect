@@ -36,7 +36,7 @@ const CollectionPreview = ({
   const EntryPreview=({entry})=>{
     return(
 
-      <div className="bg-white/50 p-2 truncate rounded text-sm">
+      <div className="bg-white/50 p-2 space-y-3 truncate rounded text-sm">
       <span className="mr-2">{getMoodById(entry.mood)?.emoji}</span>
       {entry.title}
     </div>
@@ -95,7 +95,7 @@ const CollectionPreview = ({
               </span>
             )}
           </div>
-          <div className="">
+          <div className="space-y-3">
             {entries.length>0?(entries.slice(0,2).map((entry) => <EntryPreview key={entry.id} entry={entry} />)):<p className="text-sm text-gray-600 italic">This collection have no entries yet</p>}
           </div>
         </div>
