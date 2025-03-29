@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
           <div className="bg-[url('/bg.jpg')] fixed -z-10 opacity-50 inset-0"></div>
           <Navbar />
           {/* Main Content */}
-          <main className="min-h-screen">{children}</main>
+          <main className="min-h-screen mb-25">{children}</main>
           <Toaster richColors />
           {/* Footer */}
           <footer className="bg-orange-300 py-8 bg-opacity-50">

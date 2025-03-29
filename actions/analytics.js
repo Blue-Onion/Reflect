@@ -85,5 +85,5 @@ export async function getAnalytics(period = "30d") {
       entries,
     },
   };
-  console.log(entries);
+
 }

@@ -20,14 +20,14 @@ const Collections = ({ collections = [], entriesByCollection }) => {
       if(createdCollection){
         setisCollectionDaiogOpen(false);
 
-   toast.success(`Collection ${createCollection.name} is created sucessfully`)
+   toast.success(`Collection ${createdCollection.name} is created sucessfully`)
       }
     }, [createdCollection])
     
-  const handleCreateCollection=async() => {
-    createCollectionFn(data)
-  }
-  console.log(collections);
+    const handleCreateCollection = async (data) => {
+      createCollectionFn(data);
+    };
+
   return (
     <section id="collections" className="space-y-6">
       <h2 className="text-3xl gradient-title font-bold">Collections</h2>
@@ -56,11 +56,12 @@ const Collections = ({ collections = [], entriesByCollection }) => {
       ))}
       </div>
       <CollectionForm
-          loading={createCollectionLoading}
-          onSuccess={handleCreateCollection}
-          open={isCollectionDaiogOpen}
-          setOpen={setisCollectionDaiogOpen}
-        />
+  loading={createCollectionLoading}
+  onSuccess={(formData) => handleCreateCollection(formData)}
+  open={isCollectionDaiogOpen}
+  setOpen={setisCollectionDaiogOpen}
+/>
+
 
     </section>
   );
