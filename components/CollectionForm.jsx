@@ -19,6 +19,7 @@ const CollectionForm = ({ loading, open, setOpen, onSuccess }) => {
   const {
     handleSubmit,
     register,
+    reset, 
     formState: { errors },
   } = useForm({
     resolver: zodResolver(collectionSchema),
@@ -27,9 +28,11 @@ const CollectionForm = ({ loading, open, setOpen, onSuccess }) => {
       description: "",
     },
   });
+  
 
   const onSubmit = (data) => {
     onSuccess(data);
+    reset();
     setOpen(false);
   };
 

@@ -66,3 +66,27 @@ export async function getCollection() {
     throw new Error(error.message);
   }
 }
+export async function getOneCollection({collectionId}) {
+  console.log(collectionId);
+  
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const user = await db.User.findUnique({
+      where: { clerkUserId: userId },
+    });
+    if (!user) throw new Error("User is not logged in");
+
+    const collection = await db.Collection.findUnique({
+      where: { userId: user.id ,
+        id:collectionId,
+      },
+     
+    });
+
+    return collection; // 
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
