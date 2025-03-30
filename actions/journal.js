@@ -94,3 +94,30 @@ export async function getJournalEntry({ collectionId, orderBy = "desc" } = {}) {
         throw new Error(error.message);
     }
 }
+export async function getOneJournalEntry({id}) {
+    try {
+        const { userId } = await auth();
+        if (!userId) throw new Error("Unauthorized");
+
+        const user = await db.user.findUnique({ where: { clerkUserId: userId } });
+        if (!user) throw new Error("User is not logged in");
+
+        const entry = await db.entry.findUnique({
+            where: {
+                userId: user.id,
+                id:id,
+            },
+            include: {
+                collections: {
+                    select: { name: true, id: true },
+                },
+            }
+        });
+
+        if(!entry) throw new Error("Entry Not Found")
+        return entry;
+    } catch (error) {
+        console.error(error.message);
+        throw new Error(error.message);
+    }
+}
