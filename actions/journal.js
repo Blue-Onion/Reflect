@@ -95,6 +95,8 @@ export async function getJournalEntry({ collectionId, orderBy = "desc" } = {}) {
     }
 }
 export async function getOneJournalEntry({id}) {
+    console.log("I am getOne journal");
+    
     try {
         const { userId } = await auth();
         if (!userId) throw new Error("Unauthorized");
@@ -118,6 +120,36 @@ export async function getOneJournalEntry({id}) {
         return entry;
     } catch (error) {
         console.error(error.message);
+        throw new Error(error.message);
+    }
+}
+export async function deleteJournalEntry({id}) {
+    console.log("1");
+    
+    try {
+        const { userId } = await auth();
+        if (!userId) throw new Error("Unauthorized");
+console.log(id);
+
+        const user = await db.user.findUnique({ where: { clerkUserId: userId } });
+        if (!user) throw new Error("User is not logged in");
+
+        const entry = await db.entry.findFirst({
+            where: {
+                userId: user.id,
+                id:id,
+            }
+        });
+
+        if(!entry) throw new Error("Entry Not Found")
+            await db.entry.delete({
+        where:{
+            id:id
+        }})
+
+            return entry
+    } catch (error) {
+        console.log(error.message);
         throw new Error(error.message);
     }
 }
