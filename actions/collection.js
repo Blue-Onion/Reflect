@@ -89,7 +89,7 @@ export async function deleteCollection({collectionId}) {
   }
 }
 export async function getOneCollection({ collectionId }) {
-  console.log(collectionId);
+
 
   try {
     const { userId } = await auth();

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import React from 'react'
 
 const EntryCard = ({entry}) => {
-    console.log(entry);
+
     
   return (
     <Link href={`/journal/${entry.id}`}>

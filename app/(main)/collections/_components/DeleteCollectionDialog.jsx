@@ -29,7 +29,7 @@ const DeleteCollectionDialog = ({ entriesCount, collection }) => {
       toast.error("Collection ID is missing. Unable to delete.");
       return;
     }
-    console.log("Deleting collection with ID:", collection.id);
+
     await deleteCollectionFn({ collectionId: collection.id });
   };
   

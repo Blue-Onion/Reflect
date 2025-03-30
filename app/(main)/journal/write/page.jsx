@@ -76,7 +76,7 @@ const page = () => {
       router.push(
         `/collections/${
           actionResult.collectionId
-            ? "actionResult.collectionId"
+            ? actionResult.collectionId
             : "Unorganized"
         }`
       );

@@ -6,12 +6,12 @@ import JournalFilter from '../_components/JournalFilter';
 
 const CollectionPage = async({params}) => {
   const {id}=await params;
-  console.log(id);
+
   
   const entries=await getJournalEntry({collectionId:id})
   const collection=await getOneCollection({collectionId:id})
-  console.log("entries:-",entries);
-  console.log("collections:-",collection);
+
+
   
   return (
    <div className="mt-6">
