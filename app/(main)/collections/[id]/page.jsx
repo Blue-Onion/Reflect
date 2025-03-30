@@ -26,10 +26,10 @@ const CollectionPage = async({params}) => {
         />}
       </div>
       {collection?.description&&(
-        <h2 className="font-extralight pl-2">{collection?.description}</h2>
+        <h2 className="font-extralight my-4 pl-2">{collection?.description}</h2>
       )}
     </div>
-    <JournalFilter 
+    <JournalFilter className="mt-4"
     entries={entries.data.entries}
     />
    </div>

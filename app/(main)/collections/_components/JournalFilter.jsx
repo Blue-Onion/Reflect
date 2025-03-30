@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { CalendarIcon, Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -18,7 +18,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
+import EntryCard from "./EntryCard";
 
 const JournalFilter = ({ entries }) => {
   const [selectedmood, setSelectedMood] = useState("");
@@ -30,9 +31,32 @@ const JournalFilter = ({ entries }) => {
     setDate(null);
     setSearchQuery("");
   };
+  useEffect(() => {
+   let filtered=entries;
+   if(searchQuery){
+    const query=searchQuery.toLowerCase();
+    filtered=filtered.filter((entry)=>
+    entry.title.toLowerCase().includes(query)||
+    entry.content.toLowerCase().includes(query)
+    )
+   }
+   if(selectedmood){
+
+    filtered=filtered.filter((entry)=>
+   entry.mood===selectedmood
+    )
+   }
+   if(date){
+    filtered=filtered.filter((entry)=>
+      isSameDay(new Date(entry.createdAt),date)
+      )
+   }
+   setFilteredEntries(filtered)
+  }, [entries,searchQuery,date,selectedmood])
+  
   return (
     <>
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4 space-y-4">
         <div className="flex-1 min-w-[200px]">
           <Input
             placeholder={"Search Entries..."}
@@ -91,6 +115,21 @@ const JournalFilter = ({ entries }) => {
           </Button>
         )}
       </div>
+      <div className="text-sm text-gray-500">
+        Showing {filteredEntries.length} of {entries.length} entries
+      </div>
+      {filteredEntries?.length===0?(
+        <div className="">
+          No entires found
+        </div>
+      ):(
+        <div className="flex flex-col gap-4">
+          {filteredEntries.map((entry) => {
+            return <EntryCard key={entry.id} entry={entry} />
+          }
+          )}
+        </div>
+      )}
     </>
   );
 };
