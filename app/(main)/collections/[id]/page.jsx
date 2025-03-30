@@ -10,8 +10,8 @@ const CollectionPage = async({params}) => {
   
   const entries=await getJournalEntry({collectionId:id})
   const collection=await getOneCollection({collectionId:id})
-  console.log(entries);
-  console.log(collection);
+  console.log("entries:-",entries);
+  console.log("collections:-",collection);
   
   return (
    <div className="mt-6">
@@ -22,7 +22,8 @@ const CollectionPage = async({params}) => {
         </h1>
         {collection&&<DeleteCollectionDialog
         collection={collection}
-        entiresCount={entries.data.entries.length}
+        entriesCount={entries?.data?.entries?.length || 0
+        }
         />}
       </div>
       {collection?.description&&(
