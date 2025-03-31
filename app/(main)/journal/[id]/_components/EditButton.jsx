@@ -1,10 +1,20 @@
+"use client"
+import { Button } from '@/components/ui/button'
+import { Edit } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 
 const EditButton = ({entryId}) => {
+  const router=useRouter()
   return (
-    <div>
-      Nigga Edit
-    </div>
+   <Button 
+   variant={"outline"}
+    size={"sm"}
+   onClick={()=>router.push(`write?edit=${entryId}`)}
+   >
+<Edit className='h-4 w-4 mr-2'/>
+Edit
+   </Button>
   )
 }
 

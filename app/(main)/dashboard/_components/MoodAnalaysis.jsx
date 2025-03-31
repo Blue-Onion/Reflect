@@ -93,9 +93,9 @@ const MoodAnalaysis = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="font-bold text-2xl">{stats.totalEntries}</p>
+              <p className="font-bold text-2xl">{stats.totalEntries===0?"No Entries Yet":`${stats.totalEntries}`}</p>
               <p className="text-sm text-muted-foreground">
-                ~{stats.dailyAverage} entries per day
+{stats.dailyAverage===0?"":`~${stats.dailyAverage} entries per day`}
               </p>
             </CardContent>
           </Card>
@@ -106,9 +106,12 @@ const MoodAnalaysis = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="font-bold text-2xl">{stats.averageScore}/10</p>
+            <p className="font-bold text-2xl">{isNaN(stats.averageScore)?"No Entries Yet":`${stats.averageScore}/10`}</p>
+   
+
               <p className="text-sm text-muted-foreground">
-                ~overall mood Score
+              {isNaN(stats.averageScore)?"":`~overall mood Score`}
+                
               </p>
             </CardContent>
           </Card>

@@ -43,7 +43,7 @@ const DeleteDialog = ({ entryId }) => {
         if (deletedJournal && !isDeleting) {
             setopen(false);
             toast.success("Journal Entry Deleted successfully");
-            router.push("/dashboard");
+            router.push(`/collections/${deletedJournal.collectionId?deletedJournal.collectionId:"unorganized"}`);
         }
     }, [deletedJournal, isDeleting, router]);
 

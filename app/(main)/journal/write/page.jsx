@@ -17,27 +17,45 @@ import { BarLoader } from "react-spinners";
 import { Input } from "@/components/ui/input";
 import { getMoodById, MOODS } from "@/app/lib/mood";
 import { Button } from "@/components/ui/button";
-import { createJournalEntry } from "@/actions/journal";
-import { useRouter } from "next/navigation";
+import {
+  createJournalEntry,
+  getDraft,
+  getOneJournalEntry,
+  saveDraft,
+  updateJournalEntry,
+} from "@/actions/journal";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useFetch } from "@/hooks/use-fetch";
 import { toast } from "sonner";
 import { createCollection, getCollection } from "@/actions/collection";
 import CollectionForm from "@/components/CollectionForm";
 
 const page = () => {
- 
-
   const [isCollectionDailogOpen, setisCollectionDailogOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
   const {
     fn: actionFn,
     loading: actionLoading,
     data: actionResult,
   } = useFetch(createJournalEntry);
   const {
+    fn: fetchEntry,
+    loading: entryLoading,
+    data: existingEntry,
+  } = useFetch(getOneJournalEntry);
+  const {
+    fn: fetchDraft,
+    loading: DraftLoading,
+    data: draftData,
+  } = useFetch(getDraft);
+  const { fn: saveDraftFn, loading: savingDraft } = useFetch(saveDraft);
+  const {
     fn: createCollectionFn,
     loading: createCollectionLoading,
     data: createdCollection,
-  } = useFetch(createCollection);
+  } = useFetch(editMode ? updateJournalEntry : createCollection);
   const {
     fn: fetchCollectionFn,
     loading: collectionsLoading,
@@ -49,6 +67,7 @@ const page = () => {
     register,
     control,
     setValue,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(journalSchema),
@@ -60,14 +79,12 @@ const page = () => {
     },
   });
   const submit = async (data) => {
-
     const mood = getMoodById(data.mood);
     actionFn({ ...data, moodScore: mood.score, moodQuery: mood.pixabayQuery });
   };
 
   const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
-  // ✅ Use useWatch to reactively get the selected mood
   const selectedMood = useWatch({ control, name: "mood" });
   const prompt = getMoodById(selectedMood)?.prompt || "Write Your Thoughts";
 
@@ -75,9 +92,7 @@ const page = () => {
     if (actionResult && !actionLoading) {
       router.push(
         `/collections/${
-          actionResult.collectionId
-            ? actionResult.collectionId
-            : "Unorganized"
+          actionResult.collectionId ? actionResult.collectionId : "Unorganized"
         }`
       );
       toast.success("Entry Created Suceesfully");
@@ -85,7 +100,47 @@ const page = () => {
   }, [actionResult, actionLoading]);
   useEffect(() => {
     fetchCollectionFn();
-  }, []);
+    if (editId) {
+      setEditMode(true);
+      fetchEntry();
+    } else {
+      setEditMode(false);
+      fetchDraft();
+    }
+  }, [editId]);
+  useEffect(() => {
+   if(editMode&&existingEntry){
+    reset(
+      {
+        title:existingEntry.title||"",
+        content:existingEntry.content||"",
+        mood:existingEntry.mood||"",
+        collectionId:existingEntry.collectionId||"",
+      }
+    )
+   }
+   else if(draftData?.success&&draftData?.data){
+    reset(
+      {
+        title:draftData.title||"",
+        content:draftData.content||"",
+        mood:draftData.mood||"",
+        collectionId:"",
+      }
+    )
+   }
+   else{
+    reset(
+      {
+        title:"",
+        content:"",
+        mood:"",
+        collectionId:"",
+      }
+    )
+   }
+  }, [editMode,draftData,existingEntry])
+  
   useEffect(() => {
     if (createdCollection) {
       setisCollectionDailogOpen(false);
@@ -94,7 +149,6 @@ const page = () => {
       toast.success(`Collection ${createdCollection.name} created`);
     }
   }, [createdCollection]);
-
 
   const handleCreateCollection = async (data) => {
     createCollectionFn(data);
