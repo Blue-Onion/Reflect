@@ -5,9 +5,9 @@ const aj = arcjet({
   rules: [
     tokenBucket({
       mode: "LIVE",
-      refillRate: 100,
+      refillRate: 10,
       interval: 3600,
-      capacity: 100,
+      capacity: 10,
     }),
   ],
 });
