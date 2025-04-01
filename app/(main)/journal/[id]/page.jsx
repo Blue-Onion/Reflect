@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import Image from "next/image";
 import React from "react";
-import EditButton from "./_components/EditButton";
+
 import DeleteDialog from "./_components/DeleteDialog";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -13,8 +13,7 @@ const page = async ({ params }) => {
   const { id } = await params;
   const entry = await getOneJournalEntry({ id: id })
   const mood = await getMoodById(entry.mood);
-  console.log("entry:-", entry);
-  console.log("mood:-", mood);
+
   if (!entry) {
     return (
       <div className="p-6 text-center text-gray-500">
@@ -48,7 +47,7 @@ const page = async ({ params }) => {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <EditButton entryId={id} />
+
               <DeleteDialog entryId={id} />
             </div>
           </div>

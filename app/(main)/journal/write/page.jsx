@@ -19,12 +19,9 @@ import { getMoodById, MOODS } from "@/app/lib/mood";
 import { Button } from "@/components/ui/button";
 import {
   createJournalEntry,
-  getDraft,
-  getOneJournalEntry,
-  saveDraft,
-  updateJournalEntry,
+ 
 } from "@/actions/journal";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useFetch } from "@/hooks/use-fetch";
 import { toast } from "sonner";
 import { createCollection, getCollection } from "@/actions/collection";
@@ -32,30 +29,20 @@ import CollectionForm from "@/components/CollectionForm";
 
 const page = () => {
   const [isCollectionDailogOpen, setisCollectionDailogOpen] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const searchParams = useSearchParams();
-  const editId = searchParams.get("edit");
+
+
+
   const {
     fn: actionFn,
     loading: actionLoading,
     data: actionResult,
   } = useFetch(createJournalEntry);
-  const {
-    fn: fetchEntry,
-    loading: entryLoading,
-    data: existingEntry,
-  } = useFetch(getOneJournalEntry);
-  const {
-    fn: fetchDraft,
-    loading: DraftLoading,
-    data: draftData,
-  } = useFetch(getDraft);
-  const { fn: saveDraftFn, loading: savingDraft } = useFetch(saveDraft);
+
   const {
     fn: createCollectionFn,
     loading: createCollectionLoading,
     data: createdCollection,
-  } = useFetch(editMode ? updateJournalEntry : createCollection);
+  } = useFetch(createCollection);
   const {
     fn: fetchCollectionFn,
     loading: collectionsLoading,
@@ -100,46 +87,9 @@ const page = () => {
   }, [actionResult, actionLoading]);
   useEffect(() => {
     fetchCollectionFn();
-    if (editId) {
-      setEditMode(true);
-      fetchEntry();
-    } else {
-      setEditMode(false);
-      fetchDraft();
-    }
-  }, [editId]);
-  useEffect(() => {
-   if(editMode&&existingEntry){
-    reset(
-      {
-        title:existingEntry.title||"",
-        content:existingEntry.content||"",
-        mood:existingEntry.mood||"",
-        collectionId:existingEntry.collectionId||"",
-      }
-    )
-   }
-   else if(draftData?.success&&draftData?.data){
-    reset(
-      {
-        title:draftData.title||"",
-        content:draftData.content||"",
-        mood:draftData.mood||"",
-        collectionId:"",
-      }
-    )
-   }
-   else{
-    reset(
-      {
-        title:"",
-        content:"",
-        mood:"",
-        collectionId:"",
-      }
-    )
-   }
-  }, [editMode,draftData,existingEntry])
+   
+  }, []);
+  
   
   useEffect(() => {
     if (createdCollection) {
