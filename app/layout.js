@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
           {/* Footer */}
           <footer className="bg-orange-300 py-8 bg-opacity-50">
             <div className="mx-auto text-center px-4 text-gray-800">
-              Made By me
+            © {new Date().getFullYear()} Blue Onion. All rights reserved.
             </div>
           </footer>
         </body>

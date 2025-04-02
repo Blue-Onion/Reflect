@@ -191,7 +191,7 @@ const page = () => {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Add to Your Collections</label>
+          <label className="text-sm font-medium">Add to Your Collections(optional)</label>
           <Controller
             name="collectionId"
             control={control}
