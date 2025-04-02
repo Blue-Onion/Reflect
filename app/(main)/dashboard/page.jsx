@@ -3,6 +3,7 @@ import { getJournalEntry } from "@/actions/journal";
 import React from "react";
 import Collections from "./_components/Collections";
 import MoodAnalaysis from "./_components/MoodAnalaysis";
+export const dynamic = "force-dynamic";  // Prevents prerender issues
 
 const page = async () => {
   const collections = await getCollection();
