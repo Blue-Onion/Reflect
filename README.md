@@ -37,7 +37,7 @@ PostgreSQL database
 Installation
 
 # Clone the repository
-git clone https://github.com/yourusername/reflect.git
+git clone https://github.com/Blue-Onion/Reflect
 cd reflect
 
 # Install dependencies
