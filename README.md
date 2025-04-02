@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Reflect
 
-## Getting Started
+Reflect is a journaling and mood-tracking web application designed to help users document their thoughts, track their emotions, and organize their journal entries effortlessly.
 
-First, run the development server:
+Features
 
-```bash
+📓 Journaling: Create, edit, and organize journal entries.
+
+🎭 Mood Analysis: Get insights into your emotional patterns.
+
+📂 Collections: Categorize journal entries for better organization.
+
+🔒 Secure Authentication: Uses Clerk for user authentication.
+
+☁️ Cloud Storage: Save and access your journals anywhere.
+
+Tech Stack
+
+Frontend: Next.js, React, Tailwind CSS
+
+Backend: Prisma, PostgreSQL
+
+Authentication: Clerk
+
+Deployment: Vercel
+
+Setup
+
+Prerequisites
+
+Node.js (>= 16.x)
+
+npm or yarn
+
+PostgreSQL database
+
+Installation
+
+# Clone the repository
+git clone https://github.com/yourusername/reflect.git
+cd reflect
+
+# Install dependencies
+npm install
+
+Environment Variables
+
+Create a .env file in the root directory and add the following:
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+DATABASE_URL=your_database_url
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=your_signin_url
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=your_signup_url
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=your_after_signin_url
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=your_after_signup_url
+PIXABY_API_KEY=your_pixaby_api_key
+ARCJET_KEY=your_arcjet_key
+
+Run the App
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Your app should now be running at http://localhost:3000
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Deploy the app using Vercel:
 
-## Learn More
+vercel
 
-To learn more about Next.js, take a look at the following resources:
+Make sure to add your environment variables in Vercel's dashboard.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Troubleshooting
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Prisma errors? Run npx prisma generate and npx prisma migrate dev.
 
-## Deploy on Vercel
+Next.js build issues? Use export const dynamic = "force-dynamic" for dynamic routes.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Authentication errors? Ensure Clerk environment variables are set correctly.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+License
+
+MIT License
+
+Developed with ❤️ by Blue Onion.
