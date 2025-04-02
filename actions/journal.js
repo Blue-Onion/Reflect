@@ -95,7 +95,7 @@ export async function getJournalEntry({ collectionId, orderBy = "desc" } = {}) {
   }
 }
 export async function getOneJournalEntry({ id }) {
-  console.log("I am getOne journal");
+
 
   try {
     const { userId } = await auth();
@@ -124,7 +124,7 @@ export async function getOneJournalEntry({ id }) {
   }
 }
 export async function deleteJournalEntry({ id }) {
-  console.log("1");
+
 
   try {
     const { userId } = await auth();

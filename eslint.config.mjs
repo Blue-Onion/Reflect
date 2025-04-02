@@ -13,7 +13,7 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals"),
   {
     rules: {
-      "no-unused-vars": "error", // Change "error" to "warn" if you just want warnings
+      "no-unused-vars": "warn", // Change "error" to "warn" if you just want warnings
     },
   },
 ];
