@@ -149,7 +149,7 @@ export default async function Home() {
 
           </div>
         </div>
-        <div className="grid md:grid-cols-2 gap-12">
+        <div className="flex flex-col-reverse md:grid md:grid-cols-2 gap-12">
           <div className="space-y-4 bg-white rounded-2xl shadow-xl p-6 border border-orange-100">
             <div className="flex gap-2 mb-6">
 
