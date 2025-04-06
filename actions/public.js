@@ -28,12 +28,10 @@ export const getDailyPrompt = unstable_cache(
       const data = await res.json();
       return data.slip.advice;
     } catch (error) {
-      console.error("Advice API Error:", error.message); // Fixed error logging
+  
 
-      return {
-        success: false,
-        data: "What's on your mind",
-      };
+      return "What's on your mind"
+        
     }
   },
   ["daily-prompts"],

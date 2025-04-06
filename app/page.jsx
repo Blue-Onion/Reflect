@@ -48,6 +48,8 @@ export default async function Home() {
     },
   ];
   const prompt=await getDailyPrompt()
+  console.log(prompt);
+  
   return (
     <div className="relative container mx-auto px-4 py-16">
       <div className="max-w-5xl mx-auto text-center space-y-8">
