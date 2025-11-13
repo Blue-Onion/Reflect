@@ -79,8 +79,5 @@ Next.js build issues? Use export const dynamic = "force-dynamic" for dynamic rou
 
 Authentication errors? Ensure Clerk environment variables are set correctly.
 
-License
-
-MIT License
 
 Developed with ❤️ by Blue Onion.
